@@ -1,3 +1,4 @@
+import math
 import os
 import json
 import time
@@ -170,7 +171,7 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
     }
 
     attempts = 0
-    max_attempts = num_samples * 3  # Prevent infinite loops if model is failing hard
+    max_attempts = math.floor(num_samples * 1.5)  # Prevent infinite loops if model is failing hard
 
     while valid_samples_collected < num_samples and attempts < max_attempts:
         attempts += 1
