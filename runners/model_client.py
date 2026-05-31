@@ -81,10 +81,13 @@ def call_model(system_prompt, user_prompt, model_name, max_tokens, temperature):
             extra_body={"include_reasoning": True},
         )
         message = response.choices[0].message
-        return {
-            "thinking": getattr(message, "reasoning", None),
-            "content": message.content,
-        }
+        thinking = getattr(message, "reasoning", "")
+        content = message.content or ""
+        
+        # Stitch it back into a single string for Yosef's regex parser
+        if thinking:
+            return f"<think>{thinking}</think>\n{content}"
+        return content
     except Exception as e:
         print(f"    API Error: {e}")
         return None
@@ -96,12 +99,15 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
     """
     print(f"[{model}] Starting: {puzzle} | N={complexity_n} | Target={num_samples} samples")
 
+    initial_state = None
+    goal_state = None
+
     if puzzle == "hanoi":
         system_prompt, user_prompt = get_hanoi_prompt(complexity_n)
     elif puzzle == "river_crossing":
         system_prompt, user_prompt = get_river_crossing_prompt(n_pairs=complexity_n, boat_capacity=2)
     elif puzzle == "blocks_world":
-        system_prompt, user_prompt = get_blocks_world_prompt(complexity_n)
+        system_prompt, user_prompt, initial_state, goal_state = get_blocks_world_prompt(complexity_n)
     elif puzzle == "checker_jumping":
         system_prompt, user_prompt = get_checker_jumping_prompt(complexity_n)
     else:
@@ -129,6 +135,9 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
             "model_full": model,
             "timestamp": datetime.now().isoformat(),
         }
+        if puzzle == "blocks_world":
+            metadata["initial_state"] = initial_state
+            metadata["goal_state"] = goal_state
 
         raw_response = call_model(
             system_prompt, 
@@ -144,11 +153,7 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
             continue
 
         # Filtering Process: Check if it's a validly formatted response
-        content_text = raw_response.get("content", "")
-        # Combine thinking and content for the parser if needed, but parser checks raw text
-        raw_text_for_parser = f"<think>{raw_response.get('thinking', '')}</think>\n{content_text}"
-        
-        _, final_moves = extract_responses(raw_text_for_parser)
+        _, final_moves = extract_responses(raw_response)
         
         if not final_moves:
             print(f"    Validation Failed: Model output invalid format. Discarding and retrying.")

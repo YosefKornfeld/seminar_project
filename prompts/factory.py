@@ -95,7 +95,7 @@ def get_blocks_world_prompt(n):
         "Stacks are 0-indexed."
     )
     
-    return system_prompt, user_prompt
+    return system_prompt, user_prompt, initial_stacks, goal_stacks
 
 
 def get_checker_jumping_prompt(n_checkers):
