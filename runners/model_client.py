@@ -21,13 +21,14 @@ API_KEY = os.getenv("OPENROUTER_API_KEY")
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=API_KEY,
-    timeout=60.0,
 )
 
 import sys
 # Ensure Python can resolve config.py in the parent folder
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from config import TEST_RUN
+from main import get_simulator
+
 
 EXPERIMENT_CONFIG = {
     "test_run": TEST_RUN,
@@ -242,34 +243,34 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
             time.sleep(5)
             continue
 
-        # Filtering Process: Check if it's a validly formatted response
+        # Extract response moves
         _, final_moves = extract_responses(raw_response)
         
+        is_correct = False
+        error_message = ""
+        
         if not final_moves:
-            print(f"    Validation Failed: Model output invalid format. Discarding and retrying.")
-            
-            # --- Save invalid log ---
-            test_run = EXPERIMENT_CONFIG.get("test_run", "test-run-1")
-            invalid_dir = os.path.join("logs", test_run, "invalid", model_key, puzzle, f"n{complexity_n}")
-            os.makedirs(invalid_dir, exist_ok=True)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            invalid_filename = f"{puzzle}_n{complexity_n}_attempt{attempts}_{timestamp}.json"
-            
-            invalid_data = {
-                "metadata": metadata,
-                "prompts": prompts_data,
-                "raw_response": raw_response
-            }
-            if usage_data:
-                invalid_data["usage"] = usage_data
-            with open(os.path.join(invalid_dir, invalid_filename), "w", encoding="utf-8") as f:
-                json.dump(invalid_data, f, indent=2, ensure_ascii=False)
-            # ------------------------
-            
-            time.sleep(2)
-            continue
-            
-        # If we reach here, the sample is valid
+            error_message = "Invalid format or cut off (could not parse move list)"
+        else:
+            try:
+                sim = get_simulator(puzzle, complexity_n, metadata)
+                if sim:
+                    is_correct, error_message = sim.validate_full_solution(final_moves)
+                else:
+                    error_message = "Simulator not found"
+            except Exception as e:
+                error_message = f"Simulator error: {e}"
+
+        # Inject correctness evaluation directly into metadata
+        metadata["is_correct"] = is_correct
+        metadata["error_message"] = error_message if not is_correct else ""
+
+        if is_correct:
+            print("    [RESULT] Correct solution verified by simulator!")
+        else:
+            print(f"    [RESULT] Invalid/Incorrect: {error_message}")
+
+        # Always count this as a collected sample and save it
         save_log(metadata, prompts_data, raw_response, usage_data)
         valid_samples_collected += 1
         

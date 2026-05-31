@@ -15,8 +15,9 @@ def extract_responses(raw_text):
     thinking_trace = think_match.group(1).strip() if think_match else ""
 
     # 2. Extract Move List [cite: 1111]
-    # The paper uses "moves =" patterns and bracket-based solutions
-    moves_match = re.search(r"moves\s*=\s*(.*)", raw_text, re.DOTALL)
+    # Strip thinking trace from text first to avoid matching drafts inside the think block
+    clean_text = re.sub(r"<think>.*?</think>", "", raw_text, flags=re.DOTALL)
+    moves_match = re.search(r"moves\s*=\s*(.*)", clean_text, re.DOTALL)
 
     if not moves_match:
         return thinking_trace, []

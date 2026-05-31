@@ -5,7 +5,9 @@
     "sample_id": 3,
     "model": "deepseek-r1",
     "model_full": "deepseek/deepseek-r1",
-    "timestamp": "2026-05-31T16:35:33.732085"
+    "timestamp": "2026-05-31T16:35:33.732085",
+    "is_correct": true,
+    "error_message": ""
   },
   "prompts": {
     "system": "You are an AI assistant tasked with solving the Tower of Hanoi puzzle. You must provide your step-by-step reasoning and then output the final sequence of moves. Rules:\n1. Only one disk can be moved at a time.\n2. Each move consists of taking the upper disk from one of the stacks and placing it on top of another stack.\n3. No disk may be placed on top of a smaller disk.\n\nFormat your final answer exactly as a Python list of lists: moves = [[disk_id, from_peg, to_peg], ...]",
