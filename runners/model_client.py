@@ -4,7 +4,14 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
-from prompts.factory import get_hanoi_prompt
+
+from prompts.factory import (
+    get_hanoi_prompt,
+    get_river_crossing_prompt,
+    get_blocks_world_prompt,
+    get_checker_jumping_prompt,
+)
+from parser import extract_responses
 
 # Load environment variables securely
 load_dotenv()
@@ -16,13 +23,29 @@ client = OpenAI(
     api_key=API_KEY,
 )
 
+EXPERIMENT_CONFIG = {
+    "models": [
+        "deepseek/deepseek-r1",
+        "deepseek/deepseek-v3",
+        "openai/o3-mini"
+    ],
+    "puzzles": {
+        "hanoi": [3, 4, 5],
+        "river_crossing": [3, 4, 5],
+        "blocks_world": [4, 6, 8], # Even N required for blocks world logic
+        "checker_jumping": [3, 4, 5]
+    },
+    "samples_per_config": 10,
+    "max_tokens": 64000,
+    "temperature": 1.0
+}
+
 
 def save_log(metadata, prompts, raw_response):
     """Saves the output matching the exact Data Contract agreed upon with Yosef."""
-    log_dir = "logs"
+    log_dir = os.path.join("logs", metadata["model"].replace("/", "_"))
     os.makedirs(log_dir, exist_ok=True)
 
-    # Create a unique filename: hanoi_n5_sample1_TIMESTAMP.json
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = (
         f"{metadata['puzzle']}_n{metadata['complexity_n']}"
@@ -30,7 +53,6 @@ def save_log(metadata, prompts, raw_response):
     )
     filepath = os.path.join(log_dir, filename)
 
-    # Build the exact JSON structure per the Data Contract
     log_data = {
         "metadata": metadata,
         "prompts": prompts,
@@ -40,20 +62,12 @@ def save_log(metadata, prompts, raw_response):
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(log_data, f, indent=2, ensure_ascii=False)
 
-    print(f"Saved: {filepath}")
+    print(f"    Saved valid sample to: {filepath}")
 
 
-def call_model(system_prompt, user_prompt, model_name):
+def call_model(system_prompt, user_prompt, model_name, max_tokens, temperature):
     """
-    Handles the actual API request to OpenRouter.
-
-    FIX 1: `include_reasoning` must be passed via `extra_body`, not as a
-            top-level keyword argument — the standard OpenAI SDK does not
-            recognise it and will raise a TypeError.
-
-    FIX 2: We return both the thinking tokens (reasoning) AND the final
-            content separately, so both are preserved in the log. Returning
-            only `message.content` silently discards the chain-of-thought.
+    Handles the actual API request to OpenRouter with proper experiment parameters.
     """
     try:
         response = client.chat.completions.create(
@@ -62,78 +76,106 @@ def call_model(system_prompt, user_prompt, model_name):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            extra_body={"include_reasoning": True},  # FIX 1
+            max_tokens=max_tokens,
+            temperature=temperature,
+            extra_body={"include_reasoning": True},
         )
         message = response.choices[0].message
         return {
-            "thinking": getattr(message, "reasoning", None),  # FIX 2
+            "thinking": getattr(message, "reasoning", None),
             "content": message.content,
         }
     except Exception as e:
-        print(f"API Error: {e}")
+        print(f"    API Error: {e}")
         return None
 
 
-def run_experiment(
-    puzzle="hanoi",
-    complexity_n=3,
-    num_samples=25,
-    model="deepseek/deepseek-r1",
-):
+def run_experiment(puzzle, complexity_n, num_samples, model):
     """
-    The main execution loop. Generates prompts, calls the API, and saves logs.
+    The main execution loop for a specific puzzle and complexity level.
     """
-    print(f"Starting experiment: {puzzle} | N={complexity_n} | Samples={num_samples}")
+    print(f"[{model}] Starting: {puzzle} | N={complexity_n} | Target={num_samples} samples")
 
     if puzzle == "hanoi":
         system_prompt, user_prompt = get_hanoi_prompt(complexity_n)
+    elif puzzle == "river_crossing":
+        system_prompt, user_prompt = get_river_crossing_prompt(n_pairs=complexity_n, boat_capacity=2)
+    elif puzzle == "blocks_world":
+        system_prompt, user_prompt = get_blocks_world_prompt(complexity_n)
+    elif puzzle == "checker_jumping":
+        system_prompt, user_prompt = get_checker_jumping_prompt(complexity_n)
     else:
-        raise ValueError("Only 'hanoi' is implemented right now.")
+        raise ValueError(f"Unknown puzzle: {puzzle}")
 
     prompts_data = {
         "system": system_prompt,
         "user": user_prompt,
     }
 
-    for sample_id in range(1, num_samples + 1):
-        print(f"Running Sample {sample_id}/{num_samples}...")
+    valid_samples_collected = 0
+    attempts = 0
+    max_attempts = num_samples * 3  # Prevent infinite loops if model is failing hard
 
-        # FIX 3: Timestamp is now recorded inside the metadata so Yosef can
-        #         always tell exactly when a sample was collected from the log
-        #         content alone — not just from the filename.
-        # FIX 4: Full model string is stored alongside the short name so there
-        #         is no ambiguity if the model identifier changes later.
+    while valid_samples_collected < num_samples and attempts < max_attempts:
+        attempts += 1
+        sample_id = valid_samples_collected + 1
+        print(f"  Attempting Sample {sample_id}...")
+
         metadata = {
             "puzzle": puzzle,
             "complexity_n": complexity_n,
             "sample_id": sample_id,
-            "model": model.split("/")[-1],   # short name for readability
-            "model_full": model,             # FIX 4: full identifier preserved
-            "timestamp": datetime.now().isoformat(),  # FIX 3
+            "model": model.split("/")[-1],
+            "model_full": model,
+            "timestamp": datetime.now().isoformat(),
         }
 
-        raw_response = call_model(system_prompt, user_prompt, model)
+        raw_response = call_model(
+            system_prompt, 
+            user_prompt, 
+            model,
+            max_tokens=EXPERIMENT_CONFIG["max_tokens"],
+            temperature=EXPERIMENT_CONFIG["temperature"]
+        )
 
         if raw_response is None:
-            # FIX 5: Basic retry instead of silently skipping the sample
-            print(f"  Sample {sample_id} failed. Waiting 5s then retrying once...")
+            print("    API failed. Waiting 5s...")
             time.sleep(5)
-            raw_response = call_model(system_prompt, user_prompt, model)
+            continue
 
-        if raw_response is not None:
-            save_log(metadata, prompts_data, raw_response)
-        else:
-            print(f"  Sample {sample_id} failed on retry too. Skipping.")
-
-        # Polite sleep to avoid hitting API rate limits
-        time.sleep(2)
+        # Filtering Process: Check if it's a validly formatted response
+        content_text = raw_response.get("content", "")
+        # Combine thinking and content for the parser if needed, but parser checks raw text
+        raw_text_for_parser = f"<think>{raw_response.get('thinking', '')}</think>\n{content_text}"
+        
+        _, final_moves = extract_responses(raw_text_for_parser)
+        
+        if not final_moves:
+            print(f"    Validation Failed: Model output invalid format. Discarding and retrying.")
+            time.sleep(2)
+            continue
+            
+        # If we reach here, the sample is valid
+        save_log(metadata, prompts_data, raw_response)
+        valid_samples_collected += 1
+        time.sleep(2) # Polite sleep
+        
+    if valid_samples_collected < num_samples:
+        print(f"  WARNING: Only collected {valid_samples_collected}/{num_samples} samples after {max_attempts} attempts.")
 
 
 if __name__ == "__main__":
-    # Test run: 2 samples at N=3 to verify the pipeline before burning budget
-    run_experiment(
-        puzzle="hanoi",
-        complexity_n=3,
-        num_samples=2,
-        model="deepseek/deepseek-r1",
-    )
+    print("Initializing Automated Experiment Runner...")
+    print(f"Temperature: {EXPERIMENT_CONFIG['temperature']} | Max Tokens: {EXPERIMENT_CONFIG['max_tokens']}")
+    print("---")
+    
+    for model in EXPERIMENT_CONFIG["models"]:
+        for puzzle, complexities in EXPERIMENT_CONFIG["puzzles"].items():
+            for n in complexities:
+                run_experiment(
+                    puzzle=puzzle,
+                    complexity_n=n,
+                    num_samples=EXPERIMENT_CONFIG["samples_per_config"],
+                    model=model
+                )
+    print("All experiments completed.")
