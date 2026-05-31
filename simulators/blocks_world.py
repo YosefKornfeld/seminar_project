@@ -35,3 +35,19 @@ class BlocksWorldSimulator:
     def check_goal(self):
         # Verify target goal state achievement [cite: 1099]
         return self.stacks == self.goal_stacks
+
+    def validate_full_solution(self, move_list):
+        """
+        Validates a sequence of Blocks World moves and verifies the final state.
+        Each move is expected to be: [block_id, from_stack, to_stack]
+        """
+        for i, move in enumerate(move_list):
+            if not isinstance(move, (list, tuple)) or len(move) != 3:
+                return False, f"Failure at move {i}: Invalid move structure {move}"
+            
+            success, message = self.execute_move(move)
+            if not success:
+                return False, f"Failure at move {i}: {message}"
+
+        is_solved = self.check_goal()
+        return is_solved, "Solved" if is_solved else "Target state not reached"
