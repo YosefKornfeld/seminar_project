@@ -1,10 +1,17 @@
 import os
 import json
 import time
+import random
+import string
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
-from prompts.factory import get_hanoi_prompt
+from prompts.factory import (
+    get_hanoi_prompt,
+    get_river_crossing_prompt,
+    get_blocks_world_prompt,
+    get_checker_jumping_prompt
+)
 
 # Load environment variables securely
 load_dotenv()
@@ -65,13 +72,39 @@ def call_model(system_prompt, user_prompt, model_name):
             extra_body={"include_reasoning": True},  # FIX 1
         )
         message = response.choices[0].message
-        return {
-            "thinking": getattr(message, "reasoning", None),  # FIX 2
-            "content": message.content,
-        }
+        
+        thinking = getattr(message, "reasoning", "")
+        content = message.content or ""
+        
+        # Stitch it back into a single string for Yosef's regex parser
+        if thinking:
+            return f"<think>{thinking}</think>\n{content}"
+        return content
     except Exception as e:
         print(f"API Error: {e}")
         return None
+
+
+def generate_blocks_world_states(complexity_n):
+    """
+    Generates distinct initial and goal states for Blocks World puzzle.
+    """
+    blocks = list(string.ascii_uppercase)[:complexity_n]
+    
+    def random_stacks():
+        shuffled = blocks.copy()
+        random.shuffle(shuffled)
+        stacks = [[], [], []]
+        for b in shuffled:
+            stacks[random.choice([0, 1, 2])].append(b)
+        return stacks
+        
+    initial_stacks = random_stacks()
+    goal_stacks = random_stacks()
+    while initial_stacks == goal_stacks:
+        goal_stacks = random_stacks()
+        
+    return initial_stacks, goal_stacks
 
 
 def run_experiment(
@@ -85,10 +118,21 @@ def run_experiment(
     """
     print(f"Starting experiment: {puzzle} | N={complexity_n} | Samples={num_samples}")
 
+    initial_state = None
+    goal_state = None
+
     if puzzle == "hanoi":
         system_prompt, user_prompt = get_hanoi_prompt(complexity_n)
+    elif puzzle == "river_crossing":
+        boat_capacity = 2 if complexity_n <= 3 else 3
+        system_prompt, user_prompt = get_river_crossing_prompt(complexity_n, boat_capacity)
+    elif puzzle == "blocks_world":
+        initial_state, goal_state = generate_blocks_world_states(complexity_n)
+        system_prompt, user_prompt = get_blocks_world_prompt(initial_state, goal_state)
+    elif puzzle == "checker_jumping":
+        system_prompt, user_prompt = get_checker_jumping_prompt(complexity_n)
     else:
-        raise ValueError("Only 'hanoi' is implemented right now.")
+        raise ValueError(f"Unknown puzzle: {puzzle}")
 
     prompts_data = {
         "system": system_prompt,
@@ -111,6 +155,9 @@ def run_experiment(
             "model_full": model,             # FIX 4: full identifier preserved
             "timestamp": datetime.now().isoformat(),  # FIX 3
         }
+        if puzzle == "blocks_world":
+            metadata["initial_state"] = initial_state
+            metadata["goal_state"] = goal_state
 
         raw_response = call_model(system_prompt, user_prompt, model)
 
@@ -127,6 +174,19 @@ def run_experiment(
 
         # Polite sleep to avoid hitting API rate limits
         time.sleep(2)
+
+
+def run_full_scale_study(puzzle, min_n=3, max_n=10, samples_per_n=25, model="deepseek/deepseek-r1"):
+    """
+    Iterates complexity_n from min_n to max_n. For each N, calls run_experiment.
+    Includes polite sleep timers to avoid API rate limits.
+    """
+    print(f"--- Starting Full Scale Study for {puzzle} ({model}) ---")
+    for n in range(min_n, max_n + 1):
+        run_experiment(puzzle=puzzle, complexity_n=n, num_samples=samples_per_n, model=model)
+        # Polite sleep between different complexity levels
+        time.sleep(5)
+    print(f"--- Finished Full Scale Study for {puzzle} ---")
 
 
 if __name__ == "__main__":
