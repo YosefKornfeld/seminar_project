@@ -38,10 +38,10 @@ EXPERIMENT_CONFIG = {
         "openai/o3-mini"
     ],
     "puzzles": {
-        "hanoi": [3, 4, 5],
-        "river_crossing": [3, 4, 5],
-        "blocks_world": [4, 6, 8], # Even N required for blocks world logic
-        "checker_jumping": [3, 4, 5]
+        "hanoi": [3, 4, 5, 6],
+        "river_crossing": [2, 3, 4],
+        "blocks_world": [2, 4, 6], # Even N required for blocks world logic
+        "checker_jumping": [1, 2, 3]
     },
     "samples_per_config": 10,
     "max_tokens": 16000,
