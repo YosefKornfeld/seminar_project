@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
-from utils.prompt_factory import get_hanoi_prompt
+from prompts.factory import get_hanoi_prompt
 
 # Load environment variables securely
 load_dotenv()
