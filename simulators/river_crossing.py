@@ -65,3 +65,19 @@ class RiverCrossingSimulator:
     def check_goal(self):
         # Goal: Everyone on the right bank [cite: 1021, 1050]
         return len(self.right_bank) == (2 * self.n_pairs)
+
+    def validate_full_solution(self, move_list):
+        """
+        Validates a sequence of River Crossing moves and verifies the final state.
+        Each move is a list of passenger IDs: ['A1', 'a1']
+        """
+        for i, move in enumerate(move_list):
+            if not isinstance(move, (list, tuple, set)):
+                return False, f"Failure at move {i}: Invalid move format {move}"
+                
+            success, message = self.execute_move(list(move))
+            if not success:
+                return False, f"Failure at move {i}: {message}"
+
+        is_solved = self.check_goal()
+        return is_solved, "Solved" if is_solved else "Target state not reached"

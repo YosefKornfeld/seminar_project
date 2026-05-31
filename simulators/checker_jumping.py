@@ -52,3 +52,19 @@ class CheckerJumpingSimulator:
     def check_goal(self):
         # Final goal state verification [cite: 1015]
         return self.board == self.goal
+
+    def validate_full_solution(self, move_list):
+        """
+        Validates a sequence of Checker Jumping moves and verifies the final state.
+        Each move is expected to be: [color, from_pos, to_pos]
+        """
+        for i, move in enumerate(move_list):
+            if not isinstance(move, (list, tuple)) or len(move) != 3:
+                return False, f"Failure at move {i}: Invalid move structure {move}"
+                
+            success, message = self.execute_move(move)
+            if not success:
+                return False, f"Failure at move {i}: {message}"
+
+        is_solved = self.check_goal()
+        return is_solved, "Solved" if is_solved else "Target state not reached"

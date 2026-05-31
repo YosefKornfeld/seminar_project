@@ -51,10 +51,33 @@ def get_river_crossing_prompt(n_pairs, boat_capacity):
     return system_prompt, user_prompt
 
 
-def get_blocks_world_prompt(initial_stacks, goal_stacks):
+import string
+
+def generate_blocks_world_states(n):
+    # Create list of letters based on required N
+    all_blocks = list(string.ascii_uppercase[:n])
+    mid = n // 2
+    
+    stack0 = all_blocks[:mid]
+    stack1 = all_blocks[mid:]
+    initial_state = [stack0, stack1, []]
+    
+    # Create goal state by interleaving the reversed lists
+    goal_stack = []
+    for b1, b0 in zip(reversed(stack1), reversed(stack0)):
+        goal_stack.append(b1)
+        goal_stack.append(b0)
+        
+    goal_state = [goal_stack, [], []]
+    return initial_state, goal_state
+
+
+def get_blocks_world_prompt(n):
     """
-    Generates the prompts for the Blocks World puzzle.
+    Generates the prompts for the Blocks World puzzle for a given N (number of blocks).
     """
+    initial_stacks, goal_stacks = generate_blocks_world_states(n)
+    
     system_prompt = (
         "You are an AI assistant tasked with solving a Blocks World puzzle. "
         "You must provide your step-by-step reasoning and then output the final sequence of moves. "
