@@ -40,6 +40,19 @@ EXPERIMENT_CONFIG = {
 }
 
 
+PROGRESS_FILE = "progress_tracker.json"
+
+def load_progress():
+    if os.path.exists(PROGRESS_FILE):
+        with open(PROGRESS_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_progress(progress_data):
+    with open(PROGRESS_FILE, "w") as f:
+        json.dump(progress_data, f, indent=4)
+
+
 def save_log(metadata, prompts, raw_response):
     """Saves the output matching the exact Data Contract agreed upon with Yosef."""
     log_dir = os.path.join("logs", metadata["model"].replace("/", "_"))
@@ -98,6 +111,27 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
     """
     print(f"[{model}] Starting: {puzzle} | N={complexity_n} | Target={num_samples} samples")
 
+    # --- PROGRESS TRACKING ---
+    progress = load_progress()
+    model_key = model.split("/")[-1]
+    
+    if model_key not in progress:
+        progress[model_key] = {}
+    if puzzle not in progress[model_key]:
+        progress[model_key][puzzle] = {}
+        
+    n_str = str(complexity_n)
+    completed_samples = progress[model_key][puzzle].get(n_str, 0)
+    
+    if completed_samples >= num_samples:
+        print(f"  Skipping: Already collected {completed_samples} samples (Target is {num_samples}).")
+        return
+        
+    valid_samples_collected = completed_samples
+    if valid_samples_collected > 0:
+        print(f"  Resuming from sample {valid_samples_collected + 1}...")
+    # -------------------------
+
     initial_state = None
     goal_state = None
 
@@ -117,7 +151,6 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
         "user": user_prompt,
     }
 
-    valid_samples_collected = 0
     attempts = 0
     max_attempts = num_samples * 3  # Prevent infinite loops if model is failing hard
 
@@ -156,12 +189,33 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
         
         if not final_moves:
             print(f"    Validation Failed: Model output invalid format. Discarding and retrying.")
+            
+            # --- Save invalid log ---
+            invalid_dir = os.path.join("logs", "invalid", model_key)
+            os.makedirs(invalid_dir, exist_ok=True)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            invalid_filename = f"{puzzle}_n{complexity_n}_attempt{attempts}_{timestamp}.json"
+            
+            invalid_data = {
+                "metadata": metadata,
+                "prompts": prompts_data,
+                "raw_response": raw_response
+            }
+            with open(os.path.join(invalid_dir, invalid_filename), "w", encoding="utf-8") as f:
+                json.dump(invalid_data, f, indent=2, ensure_ascii=False)
+            # ------------------------
+            
             time.sleep(2)
             continue
             
         # If we reach here, the sample is valid
         save_log(metadata, prompts_data, raw_response)
         valid_samples_collected += 1
+        
+        # Save progress
+        progress[model_key][puzzle][n_str] = valid_samples_collected
+        save_progress(progress)
+        
         time.sleep(2) # Polite sleep
         
     if valid_samples_collected < num_samples:

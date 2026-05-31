@@ -16,13 +16,32 @@ def extract_responses(raw_text):
 
     # 2. Extract Move List [cite: 1111]
     # The paper uses "moves =" patterns and bracket-based solutions
-    moves_pattern = r"moves\s*=\s*(\[.*?\])"
-    moves_match = re.search(moves_pattern, raw_text, re.DOTALL)
+    moves_match = re.search(r"moves\s*=\s*(.*)", raw_text, re.DOTALL)
 
     if not moves_match:
         return thinking_trace, []
 
-    raw_moves_str = moves_match.group(1)
+    remainder = moves_match.group(1)
+    
+    start_idx = remainder.find('[')
+    if start_idx == -1:
+        return thinking_trace, []
+        
+    count = 0
+    end_idx = -1
+    for i in range(start_idx, len(remainder)):
+        if remainder[i] == '[':
+            count += 1
+        elif remainder[i] == ']':
+            count -= 1
+            if count == 0:
+                end_idx = i
+                break
+                
+    if end_idx == -1:
+        return thinking_trace, []
+        
+    raw_moves_str = remainder[start_idx:end_idx+1]
 
     # 3. Cleaning & Normalization [cite: 1112-1114]
     # Remove Python-style comments (text following "#")
