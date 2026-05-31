@@ -11,6 +11,8 @@ from simulators.blocks_world import BlocksWorldSimulator
 from simulators.checker_jumping import CheckerJumpingSimulator
 
 
+from config import TEST_RUN
+
 def get_simulator(puzzle_type, n, metadata):
     """
     Factory to initialize the correct simulator based on metadata.
@@ -65,14 +67,17 @@ def process_logs(log_dir):
 
     # Save to CSV for the final presentation graphs
     df = pd.DataFrame(results)
-    df.to_csv("experiment_results.csv", index=False)
-    print("Evaluation complete. Results saved to experiment_results.csv")
+    csv_path = os.path.join(log_dir, "experiment_results.csv")
+    df.to_csv(csv_path, index=False)
+    print(f"Evaluation complete. Results saved to {csv_path}")
 
     # Generate the visualization graph automatically
     import visualize
     print("Generating visualization graph...")
-    visualize.plot_accuracy_vs_complexity()
+    visualize.plot_accuracy_vs_complexity(csv_path=csv_path, output_dir=log_dir)
 
 
 if __name__ == "__main__":
-    process_logs("./logs")
+    log_dir = os.path.join("logs", TEST_RUN)
+    print(f"Evaluating logs in directory: {log_dir}")
+    process_logs(log_dir)

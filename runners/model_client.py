@@ -22,7 +22,13 @@ client = OpenAI(
     api_key=API_KEY,
 )
 
+import sys
+# Ensure Python can resolve config.py in the parent folder
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from config import TEST_RUN
+
 EXPERIMENT_CONFIG = {
+    "test_run": TEST_RUN,
     "models": [
         "deepseek/deepseek-r1",
         "deepseek/deepseek-v3",
@@ -40,22 +46,34 @@ EXPERIMENT_CONFIG = {
 }
 
 
-PROGRESS_FILE = "progress_tracker.json"
+def get_progress_file():
+    test_run = EXPERIMENT_CONFIG.get("test_run", "test-run-1")
+    os.makedirs(os.path.join("logs", test_run), exist_ok=True)
+    return os.path.join("logs", test_run, "progress_tracker.json")
 
 def load_progress():
-    if os.path.exists(PROGRESS_FILE):
-        with open(PROGRESS_FILE, "r") as f:
+    progress_file = get_progress_file()
+    if os.path.exists(progress_file):
+        with open(progress_file, "r") as f:
             return json.load(f)
     return {}
 
 def save_progress(progress_data):
-    with open(PROGRESS_FILE, "w") as f:
+    progress_file = get_progress_file()
+    with open(progress_file, "w") as f:
         json.dump(progress_data, f, indent=4)
 
 
 def save_log(metadata, prompts, raw_response):
     """Saves the output matching the exact Data Contract agreed upon with Yosef."""
-    log_dir = os.path.join("logs", metadata["model"].replace("/", "_"))
+    test_run = EXPERIMENT_CONFIG.get("test_run", "test-run-1")
+    log_dir = os.path.join(
+        "logs",
+        test_run,
+        metadata["model"].replace("/", "_"),
+        metadata["puzzle"],
+        f"n{metadata['complexity_n']}"
+    )
     os.makedirs(log_dir, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -191,7 +209,8 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
             print(f"    Validation Failed: Model output invalid format. Discarding and retrying.")
             
             # --- Save invalid log ---
-            invalid_dir = os.path.join("logs", "invalid", model_key)
+            test_run = EXPERIMENT_CONFIG.get("test_run", "test-run-1")
+            invalid_dir = os.path.join("logs", test_run, "invalid", model_key, puzzle, f"n{complexity_n}")
             os.makedirs(invalid_dir, exist_ok=True)
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             invalid_filename = f"{puzzle}_n{complexity_n}_attempt{attempts}_{timestamp}.json"
