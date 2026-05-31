@@ -32,10 +32,11 @@ def get_simulator(puzzle_type, n, metadata):
 def process_logs(log_dir):
     results = []
 
-    for filename in os.listdir(log_dir):
-        if not filename.endswith(".json"): continue
+    for root, _, files in os.walk(log_dir):
+        for filename in files:
+            if not filename.endswith(".json"): continue
 
-        with open(os.path.join(log_dir, filename), 'r') as f:
+            with open(os.path.join(root, filename), 'r') as f:
             log_data = json.load(f)
 
         # 1. Extraction
@@ -66,6 +67,11 @@ def process_logs(log_dir):
     df = pd.DataFrame(results)
     df.to_csv("experiment_results.csv", index=False)
     print("Evaluation complete. Results saved to experiment_results.csv")
+
+    # Generate the visualization graph automatically
+    import visualize
+    print("Generating visualization graph...")
+    visualize.plot_accuracy_vs_complexity()
 
 
 if __name__ == "__main__":

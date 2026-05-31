@@ -4,7 +4,6 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
-
 from prompts.factory import (
     get_hanoi_prompt,
     get_river_crossing_prompt,
