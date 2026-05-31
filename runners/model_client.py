@@ -21,6 +21,7 @@ API_KEY = os.getenv("OPENROUTER_API_KEY")
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=API_KEY,
+    timeout=60.0,
 )
 
 import sys
@@ -42,15 +43,14 @@ EXPERIMENT_CONFIG = {
         "checker_jumping": [3, 4, 5]
     },
     "samples_per_config": 10,
-    "max_tokens": 64000,
+    "max_tokens": 16000,
     "temperature": 1.0
 }
 
 
 def get_progress_file():
-    test_run = EXPERIMENT_CONFIG.get("test_run", "test-run-1")
-    os.makedirs(os.path.join("logs", test_run), exist_ok=True)
-    return os.path.join("logs", test_run, "progress_tracker.json")
+    # Points to progress_tracker.json directly in the project root folder
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "progress_tracker.json"))
 
 def load_progress():
     progress_file = get_progress_file()
@@ -65,7 +65,7 @@ def save_progress(progress_data):
         json.dump(progress_data, f, indent=4)
 
 
-def save_log(metadata, prompts, raw_response):
+def save_log(metadata, prompts, raw_response, usage_data=None):
     """Saves the output matching the exact Data Contract agreed upon with Yosef."""
     test_run = EXPERIMENT_CONFIG.get("test_run", "test-run-1")
     log_dir = os.path.join(
@@ -89,6 +89,8 @@ def save_log(metadata, prompts, raw_response):
         "prompts": prompts,
         "raw_response": raw_response,
     }
+    if usage_data:
+        log_data["usage"] = usage_data
 
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(log_data, f, indent=2, ensure_ascii=False)
@@ -99,9 +101,11 @@ def save_log(metadata, prompts, raw_response):
 def call_model(system_prompt, user_prompt, model_name, max_tokens, temperature):
     """
     Handles the actual API request to OpenRouter with proper experiment parameters.
+    Uses streaming to avoid silent hangs on long reasoning traces.
     """
     try:
-        response = client.chat.completions.create(
+        print(f"    [API] Streaming from OpenRouter ({model_name})...")
+        stream = client.chat.completions.create(
             model=model_name,
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -110,18 +114,53 @@ def call_model(system_prompt, user_prompt, model_name, max_tokens, temperature):
             max_tokens=max_tokens,
             temperature=temperature,
             extra_body={"include_reasoning": True},
+            timeout=180.0,
+            stream=True,
         )
-        message = response.choices[0].message
-        thinking = getattr(message, "reasoning", "")
-        content = message.content or ""
-        
-        # Stitch it back into a single string for Yosef's regex parser
+
+        thinking_chunks = []
+        content_chunks = []
+        token_count = 0
+        usage_data = {}
+
+        for chunk in stream:
+            delta = chunk.choices[0].delta if chunk.choices else None
+            if delta:
+                # Reasoning/thinking tokens (DeepSeek R1 / o3-mini)
+                reasoning_piece = getattr(delta, "reasoning", None)
+                if reasoning_piece:
+                    thinking_chunks.append(reasoning_piece)
+                    token_count += 1
+                    print(f"\r    [Thinking... ~{token_count} tokens]", end="", flush=True)
+
+                # Final answer tokens
+                if delta.content:
+                    content_chunks.append(delta.content)
+                    token_count += 1
+                    print(f"\r    [Generating... ~{token_count} tokens]", end="", flush=True)
+
+            # Capture usage from the last chunk if provided
+            if getattr(chunk, "usage", None):
+                usage = chunk.usage
+                usage_data = {
+                    "prompt_tokens": getattr(usage, "prompt_tokens", 0),
+                    "completion_tokens": getattr(usage, "completion_tokens", 0),
+                    "total_tokens": getattr(usage, "total_tokens", 0),
+                }
+
+        print(f"\r    [API] Done. ~{token_count} tokens received.          ")
+
+        thinking = "".join(thinking_chunks)
+        content = "".join(content_chunks)
+
+        raw_response = content
         if thinking:
-            return f"<think>{thinking}</think>\n{content}"
-        return content
+            raw_response = f"<think>{thinking}</think>\n{content}"
+
+        return raw_response, usage_data
     except Exception as e:
-        print(f"    API Error: {e}")
-        return None
+        print(f"\n    API Error: {e}")
+        return None, None
 
 
 def run_experiment(puzzle, complexity_n, num_samples, model):
@@ -190,7 +229,7 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
             metadata["initial_state"] = initial_state
             metadata["goal_state"] = goal_state
 
-        raw_response = call_model(
+        raw_response, usage_data = call_model(
             system_prompt, 
             user_prompt, 
             model,
@@ -221,6 +260,8 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
                 "prompts": prompts_data,
                 "raw_response": raw_response
             }
+            if usage_data:
+                invalid_data["usage"] = usage_data
             with open(os.path.join(invalid_dir, invalid_filename), "w", encoding="utf-8") as f:
                 json.dump(invalid_data, f, indent=2, ensure_ascii=False)
             # ------------------------
@@ -229,7 +270,7 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
             continue
             
         # If we reach here, the sample is valid
-        save_log(metadata, prompts_data, raw_response)
+        save_log(metadata, prompts_data, raw_response, usage_data)
         valid_samples_collected += 1
         
         # Save progress
