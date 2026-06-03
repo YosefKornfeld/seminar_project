@@ -38,7 +38,7 @@ EXPERIMENT_CONFIG = {
         "openai/o3-mini"
     ],
     "puzzles": {
-        "hanoi": [3, 4, 5, 6],
+        "hanoi": [3, 4, 5, 6, 7],
         "river_crossing": [2, 3, 4],
         "blocks_world": [2, 4, 6], # Even N required for blocks world logic
         "checker_jumping": [1, 2, 3]
