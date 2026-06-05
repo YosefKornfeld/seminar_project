@@ -15,6 +15,9 @@
         "checker_jumping": {
             "1": 10,
             "2": 3
+        },
+        "river_crossing": {
+            "2": 2
         }
     }
 }
