@@ -17,8 +17,7 @@ moves = [[1 , 0 , 2] , [2 , 0 , 1] , [1 , 2 , 1] , [3 , 0 , 2] ,
 [1 , 1 , 0] , [2 , 1 , 2] , [1 , 0 , 2]]
 This means: Move disk 1 from peg 0 to peg 2, then move disk 2 from peg 0 to peg 1, and so on.
 Requirements:
-list of moves.
-• When exploring potential solutions in your thinking process, always include the corresponding complete
+• When exploring potential solutions in your thinking process, always include the corresponding complete list of moves.
 • The positions are 0-indexed (the leftmost peg is 0).
 • Ensure your final answer includes the complete list of moves in the format:
 moves = [[disk id, from peg, to peg], ...]"""
@@ -115,8 +114,7 @@ might be:
 moves = [[" C " , 1 , 2] , [" B " , 0 , 1]]
 This means: Move block C from stack 1 to stack 2, then move block B from stack 0 to stack 1.
 Requirements:
-list of moves.
-• When exploring potential solutions in your thinking process, always include the corresponding complete
+• When exploring potential solutions in your thinking process, always include the corresponding complete list of moves.
 • The positions are 0-indexed (the leftmost position is 0).
 • Ensure your final answer also includes the complete list of moves for final solution in the format: moves =
 [[block, from stack, to stack], ...]"""
@@ -159,8 +157,7 @@ moves = [[`R`, 0, 1] , [`B`, 2, 0] , [`R`, 1, 2]]
 This means: Move the red checker from position 0 to 1, then move the blue checker from position 2 to 0, and so
 on.
 Requirements:
-list of moves.
-• When exploring potential solutions in your thinking process, always include the corresponding complete
+• When exploring potential solutions in your thinking process, always include the corresponding complete list of moves.
 • The positions are 0-indexed (the leftmost position is 0).
 • Ensure your final answer includes the complete list of moves for final solution in the format: moves =
 [[checker_color, position_from, position_to], ...]"""
@@ -170,7 +167,7 @@ list of moves.
     goal_state = (['B'] * n_checkers) + ['_'] + (['R'] * n_checkers)
     
     user_prompt = (
-f"""I have a puzzle with {2*n_checkers+1} positions, where {n_checkers} red checkers (`R`) on left, {n_checkers} blue checkers (’B’) on right,
+f"""I have a puzzle with {2*n_checkers+1} positions, where {n_checkers} red checkers (`R`) on left, {n_checkers} blue checkers (`B`) on right,
 and one empty space (`_`) in between are arranged in a line.
 Initial board: R R ... R _ B B ... B
 Goal board: B B ... B _ R R ... R

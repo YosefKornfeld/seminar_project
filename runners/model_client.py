@@ -17,6 +17,10 @@ from parser import extract_responses
 load_dotenv()
 API_KEY = os.getenv("OPENROUTER_API_KEY")
 
+# Optional: comma-separated list of puzzles to run (e.g. "hanoi,river_crossing").
+# If not set, all puzzles in EXPERIMENT_CONFIG are run.
+_PUZZLES_ENV = os.getenv("PUZZLES", "").strip()
+
 # Initialize the OpenRouter client (using the OpenAI library wrapper)
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
@@ -287,10 +291,24 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
 if __name__ == "__main__":
     print("Initializing Automated Experiment Runner...")
     print(f"Temperature: {EXPERIMENT_CONFIG['temperature']} | Max Tokens: {EXPERIMENT_CONFIG['max_tokens']}")
+
+    # Filter puzzles based on the PUZZLES env var (if set)
+    all_puzzles = EXPERIMENT_CONFIG["puzzles"]
+    if _PUZZLES_ENV:
+        selected = [p.strip() for p in _PUZZLES_ENV.split(",") if p.strip()]
+        unknown = [p for p in selected if p not in all_puzzles]
+        if unknown:
+            print(f"WARNING: Unknown puzzle(s) in PUZZLES env var (will be skipped): {unknown}")
+        active_puzzles = {p: all_puzzles[p] for p in selected if p in all_puzzles}
+        print(f"Running only these puzzles (from PUZZLES env var): {list(active_puzzles.keys())}")
+    else:
+        active_puzzles = all_puzzles
+        print("PUZZLES env var not set — running all puzzles.")
+
     print("---")
-    
+
     for model in EXPERIMENT_CONFIG["models"]:
-        for puzzle, complexities in EXPERIMENT_CONFIG["puzzles"].items():
+        for puzzle, complexities in active_puzzles.items():
             for n in complexities:
                 run_experiment(
                     puzzle=puzzle,
