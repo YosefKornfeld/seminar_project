@@ -17,12 +17,17 @@ def extract_responses(raw_text):
     # 2. Extract Move List [cite: 1111]
     # Strip thinking trace from text first to avoid matching drafts inside the think block
     clean_text = re.sub(r"<think>.*?</think>", "", raw_text, flags=re.DOTALL)
-    moves_match = re.search(r"moves\s*=\s*(.*)", clean_text, re.DOTALL)
+    # Use finditer to grab the LAST occurrence of "moves = ..." in the response,
+    # since models sometimes restate the format template before giving the actual answer.
+    # Note: no re.DOTALL so each match stops at end-of-line, allowing multiple matches.
+    all_moves_matches = list(re.finditer(r"moves\s*=\s*(.*)", clean_text))
+    moves_match = all_moves_matches[-1] if all_moves_matches else None
 
     if not moves_match:
         return thinking_trace, []
 
-    remainder = moves_match.group(1)
+    # Get everything from the last "moves = " to end of text for bracket matching
+    remainder = clean_text[moves_match.start(1):]
     
     start_idx = remainder.find('[')
     if start_idx == -1:

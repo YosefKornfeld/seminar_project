@@ -73,7 +73,9 @@ def save_progress(progress_data):
 def save_log(metadata, prompts, raw_response, usage_data=None):
     """Saves the output matching the exact Data Contract agreed upon with Yosef."""
     test_run = EXPERIMENT_CONFIG.get("test_run", "test-run-1")
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     log_dir = os.path.join(
+        project_root,
         "logs",
         test_run,
         metadata["model"].replace("/", "_"),
