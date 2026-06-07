@@ -38,7 +38,7 @@ EXPERIMENT_CONFIG = {
     "test_run": TEST_RUN,
     "models": [
         "deepseek/deepseek-r1",
-        "deepseek/deepseek-v3",
+        "deepseek/deepseek-chat",
        # "openai/o3-mini"
     ],
     "puzzles": {

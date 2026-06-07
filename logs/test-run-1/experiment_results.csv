@@ -1,0 +1,184 @@
+puzzle,n,model,is_correct,thinking_tokens,error_message
+hanoi,7,deepseek-chat,False,0,Failure at move 24: Disk 1 is not at the top of peg 2
+hanoi,7,deepseek-chat,False,0,Failure at move 43: Illegal move: Disk 3 is larger than 1
+hanoi,7,deepseek-chat,False,0,Failure at move 16: Illegal move: Disk 6 is larger than 1
+hanoi,7,deepseek-chat,True,0,
+hanoi,7,deepseek-chat,False,0,Failure at move 11: Illegal move: Disk 3 is larger than 1
+hanoi,7,deepseek-chat,False,0,Invalid format or cut off (could not parse move list)
+hanoi,7,deepseek-chat,True,0,
+hanoi,7,deepseek-chat,False,0,Target state not reached
+hanoi,7,deepseek-chat,True,0,
+hanoi,7,deepseek-chat,True,0,
+hanoi,6,deepseek-chat,False,0,Failure at move 31: Illegal move: Disk 6 is larger than 1
+hanoi,6,deepseek-chat,False,0,Failure at move 15: Disk 5 is not at the top of peg 0
+hanoi,6,deepseek-chat,False,0,Failure at move 31: Illegal move: Disk 6 is larger than 1
+hanoi,6,deepseek-chat,False,0,Target state not reached
+hanoi,6,deepseek-chat,False,0,Failure at move 31: Illegal move: Disk 6 is larger than 1
+hanoi,6,deepseek-chat,False,0,Failure at move 31: Illegal move: Disk 6 is larger than 1
+hanoi,6,deepseek-chat,False,0,Simulator error: cannot unpack non-iterable int object
+hanoi,6,deepseek-chat,False,0,Failure at move 31: Illegal move: Disk 6 is larger than 1
+hanoi,6,deepseek-chat,False,0,Simulator error: cannot unpack non-iterable int object
+hanoi,6,deepseek-chat,False,0,Simulator error: cannot unpack non-iterable int object
+hanoi,4,deepseek-chat,True,0,
+hanoi,4,deepseek-chat,False,0,Failure at move 23: Disk 3 is not at the top of peg 1
+hanoi,4,deepseek-chat,True,0,
+hanoi,4,deepseek-chat,True,0,
+hanoi,4,deepseek-chat,False,0,Simulator error: cannot unpack non-iterable int object
+hanoi,4,deepseek-chat,True,0,
+hanoi,4,deepseek-chat,True,0,
+hanoi,4,deepseek-chat,False,0,Target state not reached
+hanoi,4,deepseek-chat,True,0,
+hanoi,4,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,3,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+hanoi,5,deepseek-chat,True,0,
+river_crossing,4,deepseek-chat,False,0,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-chat,False,0,Failure at move 2: Left Bank Safety violation: Actor a1 is with rival agents without their own agent.
+river_crossing,4,deepseek-chat,False,0,Failure at move 0: Right Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-chat,False,0,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-chat,False,0,Invalid format or cut off (could not parse move list)
+river_crossing,4,deepseek-chat,False,0,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-chat,False,0,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-chat,False,0,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-chat,False,0,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-chat,False,0,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,2,deepseek-chat,True,0,
+river_crossing,2,deepseek-chat,True,0,
+river_crossing,2,deepseek-chat,False,0,Failure at move 1: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,2,deepseek-chat,True,0,
+river_crossing,2,deepseek-chat,True,0,
+river_crossing,2,deepseek-chat,True,0,
+river_crossing,2,deepseek-chat,False,0,Failure at move 2: Right Bank Safety violation: Actor a1 is with rival agents without their own agent.
+river_crossing,2,deepseek-chat,False,0,Failure at move 1: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,2,deepseek-chat,True,0,
+river_crossing,2,deepseek-chat,True,0,
+blocks_world,6,deepseek-r1,False,8747,Target state not reached
+blocks_world,6,deepseek-r1,False,6789,Target state not reached
+blocks_world,6,deepseek-r1,False,6232,Target state not reached
+blocks_world,6,deepseek-r1,True,7722,
+blocks_world,6,deepseek-r1,False,7613,Target state not reached
+blocks_world,6,deepseek-r1,True,6665,
+blocks_world,6,deepseek-r1,True,5858,
+blocks_world,6,deepseek-r1,True,6790,
+blocks_world,6,deepseek-r1,True,5076,
+blocks_world,6,deepseek-r1,True,6626,
+blocks_world,10,deepseek-r1,True,7917,
+blocks_world,10,deepseek-r1,True,7256,
+blocks_world,10,deepseek-r1,False,7504,Target state not reached
+blocks_world,10,deepseek-r1,True,5618,
+blocks_world,10,deepseek-r1,False,9837,Target state not reached
+blocks_world,10,deepseek-r1,False,6549,Target state not reached
+blocks_world,10,deepseek-r1,False,8185,Target state not reached
+blocks_world,10,deepseek-r1,True,6987,
+blocks_world,10,deepseek-r1,True,5666,
+blocks_world,10,deepseek-r1,True,6415,
+blocks_world,2,deepseek-r1,False,3513,Target state not reached
+blocks_world,2,deepseek-r1,False,3887,Target state not reached
+blocks_world,2,deepseek-r1,False,4043,Target state not reached
+blocks_world,2,deepseek-r1,True,3453,
+blocks_world,2,deepseek-r1,True,3633,
+blocks_world,2,deepseek-r1,False,3160,Target state not reached
+blocks_world,2,deepseek-r1,False,1352,Target state not reached
+blocks_world,2,deepseek-r1,True,4179,
+blocks_world,2,deepseek-r1,False,1422,Target state not reached
+blocks_world,2,deepseek-r1,False,3917,Target state not reached
+hanoi,7,deepseek-r1,True,5888,
+hanoi,7,deepseek-r1,False,5926,Failure at move 11: Illegal move: Disk 3 is larger than 1
+hanoi,7,deepseek-r1,False,6569,Failure at move 79: Illegal move: Disk 5 is larger than 1
+hanoi,7,deepseek-r1,True,5060,
+hanoi,7,deepseek-r1,False,5900,Failure at move 15: Disk 5 is not at the top of peg 0
+hanoi,7,deepseek-r1,True,5947,
+hanoi,7,deepseek-r1,False,5373,Failure at move 47: Disk 5 is not at the top of peg 2
+hanoi,7,deepseek-r1,True,6539,
+hanoi,7,deepseek-r1,False,5457,Failure at move 8: Disk 1 is not at the top of peg 0
+hanoi,7,deepseek-r1,True,4060,
+hanoi,6,deepseek-r1,True,7121,
+hanoi,6,deepseek-r1,True,4660,
+hanoi,6,deepseek-r1,True,5174,
+hanoi,6,deepseek-r1,True,4098,
+hanoi,6,deepseek-r1,False,6763,Failure at move 3: Illegal move: Disk 3 is larger than 1
+hanoi,6,deepseek-r1,True,2543,
+hanoi,6,deepseek-r1,True,3778,
+hanoi,6,deepseek-r1,True,4224,
+hanoi,6,deepseek-r1,False,5370,Failure at move 9: Illegal move: Disk 2 is larger than 1
+hanoi,6,deepseek-r1,False,4657,Invalid format or cut off (could not parse move list)
+hanoi,4,deepseek-r1,True,1459,
+hanoi,4,deepseek-r1,True,1988,
+hanoi,4,deepseek-r1,True,1944,
+hanoi,4,deepseek-r1,True,1268,
+hanoi,4,deepseek-r1,True,1642,
+hanoi,4,deepseek-r1,True,1506,
+hanoi,4,deepseek-r1,True,824,
+hanoi,4,deepseek-r1,True,2003,
+hanoi,4,deepseek-r1,True,1817,
+hanoi,4,deepseek-r1,True,1041,
+hanoi,3,deepseek-r1,True,1290,
+hanoi,3,deepseek-r1,True,726,
+hanoi,3,deepseek-r1,True,827,
+hanoi,3,deepseek-r1,True,767,
+hanoi,3,deepseek-r1,True,1162,
+hanoi,3,deepseek-r1,True,658,
+hanoi,3,deepseek-r1,True,1013,
+hanoi,3,deepseek-r1,True,1041,
+hanoi,3,deepseek-r1,True,815,
+hanoi,3,deepseek-r1,True,1119,
+hanoi,5,deepseek-r1,True,5925,
+hanoi,5,deepseek-r1,True,3542,
+hanoi,5,deepseek-r1,True,4982,
+hanoi,5,deepseek-r1,False,1727,Invalid format or cut off (could not parse move list)
+hanoi,5,deepseek-r1,True,4562,
+hanoi,5,deepseek-r1,True,4974,
+hanoi,5,deepseek-r1,True,4361,
+hanoi,5,deepseek-r1,True,4334,
+hanoi,5,deepseek-r1,True,4076,
+hanoi,5,deepseek-r1,True,4202,
+river_crossing,4,deepseek-r1,False,10824,Failure at move 0: Right Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-r1,False,8240,Invalid format or cut off (could not parse move list)
+river_crossing,4,deepseek-r1,False,12460,Failure at move 4: Right Bank Safety violation: Actor a4 is with rival agents without their own agent.
+river_crossing,4,deepseek-r1,False,11552,Failure at move 2: Left Bank Safety violation: Actor a1 is with rival agents without their own agent.
+river_crossing,4,deepseek-r1,False,6739,Failure at move 3: Right Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-r1,False,12168,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-r1,False,9308,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-r1,True,8889,
+river_crossing,4,deepseek-r1,False,12229,Failure at move 0: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,4,deepseek-r1,False,10788,Failure at move 4: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,2,deepseek-r1,False,4716,Failure at move 1: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,2,deepseek-r1,True,5334,
+river_crossing,2,deepseek-r1,False,7813,Failure at move 4: Right Bank Safety violation: Actor a2 is with rival agents without their own agent.
+river_crossing,2,deepseek-r1,True,4594,
+river_crossing,2,deepseek-r1,True,5105,
+river_crossing,2,deepseek-r1,True,5515,
+river_crossing,2,deepseek-r1,True,5497,
+river_crossing,2,deepseek-r1,True,5808,
+river_crossing,2,deepseek-r1,True,4211,
+river_crossing,2,deepseek-r1,True,6528,
+checker_jumping,1,deepseek-r1,True,9055,
+checker_jumping,1,deepseek-r1,True,2171,
+checker_jumping,1,deepseek-r1,True,5790,
+checker_jumping,1,deepseek-r1,True,6517,
+checker_jumping,1,deepseek-r1,True,8069,
+checker_jumping,1,deepseek-r1,True,2004,
+checker_jumping,1,deepseek-r1,True,2053,
+checker_jumping,1,deepseek-r1,True,1633,
+checker_jumping,1,deepseek-r1,True,1458,
+checker_jumping,1,deepseek-r1,True,1875,
+checker_jumping,2,deepseek-r1,False,10824,Failure at move 5: Target position 2 is not empty
+checker_jumping,2,deepseek-r1,True,7609,
+checker_jumping,2,deepseek-r1,True,8373,

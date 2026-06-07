@@ -48,22 +48,20 @@ def process_logs(log_dir):
             # 2. Reasoning Effort Analysis [cite: 1117-1118]
             token_count = get_thought_token_count(thinking_trace)
 
-            # 3. Validation [cite: 1121-1125]
+            # 3. Read validation directly from metadata [cite: 1121-1125]
             meta = log_data['metadata']
-            sim = get_simulator(meta['puzzle'], meta['complexity_n'], meta)
+            is_correct = meta.get('is_correct', False)
+            report = meta.get('error_message', '')
 
-            if sim:
-                is_correct, report = sim.validate_full_solution(moves)
-
-                # 4. Create Contract B Record [cite: 1125, 1375]
-                results.append({
-                    "puzzle": meta['puzzle'],
-                    "n": meta['complexity_n'],
-                    "model": meta['model'],
-                    "is_correct": is_correct,
-                    "thinking_tokens": token_count,
-                    "error_message": report if not is_correct else ""
-                })
+            # 4. Create Contract B Record [cite: 1125, 1375]
+            results.append({
+                "puzzle": meta['puzzle'],
+                "n": meta['complexity_n'],
+                "model": meta['model'],
+                "is_correct": is_correct,
+                "thinking_tokens": token_count,
+                "error_message": report if not is_correct else ""
+            })
 
     # Save to CSV for the final presentation graphs
     df = pd.DataFrame(results)
