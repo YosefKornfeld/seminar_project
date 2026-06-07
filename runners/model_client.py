@@ -39,7 +39,7 @@ EXPERIMENT_CONFIG = {
     "models": [
         "deepseek/deepseek-r1",
         "deepseek/deepseek-v3",
-        "openai/o3-mini"
+       # "openai/o3-mini"
     ],
     "puzzles": {
         "hanoi": [3, 4, 5, 6, 7],
@@ -203,7 +203,8 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
     if puzzle == "hanoi":
         system_prompt, user_prompt = get_hanoi_prompt(complexity_n)
     elif puzzle == "river_crossing":
-        system_prompt, user_prompt = get_river_crossing_prompt(n_pairs=complexity_n, boat_capacity=2)
+        boat_capacity = 3 if complexity_n > 3 else 2
+        system_prompt, user_prompt = get_river_crossing_prompt(n_pairs=complexity_n, boat_capacity=boat_capacity)
     elif puzzle == "blocks_world":
         system_prompt, user_prompt, initial_state, goal_state = get_blocks_world_prompt(complexity_n)
     elif puzzle == "checker_jumping":

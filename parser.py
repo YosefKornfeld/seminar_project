@@ -107,6 +107,12 @@ def extract_responses(raw_text):
     # Remove newlines and extra spaces to normalize the string
     clean_moves_str = clean_moves_str.replace('\n', ' ').strip()
 
+    # Replace backtick-delimited strings with regular quoted strings.
+    # The checker_jumping prompt example uses backticks (e.g. [`R`, 0, 1]),
+    # and some models faithfully mirror that format. ast.literal_eval only
+    # understands standard Python string delimiters (" or ').
+    clean_moves_str = re.sub(r"`([^`]*)`", r'"\1"', clean_moves_str)
+
     try:
         # Convert the string representation of a list into a real Python list
         # Using ast.literal_eval is safer than eval()
