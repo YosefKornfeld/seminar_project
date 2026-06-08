@@ -2,6 +2,7 @@ import math
 import os
 import json
 import time
+import signal
 from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -34,6 +35,21 @@ from config import TEST_RUN
 from main import get_simulator
 
 
+stop_requested = False
+
+def signal_handler(sig, frame):
+    global stop_requested
+    if not stop_requested:
+        print("\n\n[!] Graceful stop requested! Will exit after the current sample completes.")
+        print("    (Press Ctrl+C again to force quit immediately)\n")
+        stop_requested = True
+    else:
+        print("\n[!] Force quitting...")
+        sys.exit(1)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+
 EXPERIMENT_CONFIG = {
     "test_run": TEST_RUN,
     "models": [
@@ -44,7 +60,7 @@ EXPERIMENT_CONFIG = {
     "puzzles": {
         "hanoi": [3, 4, 5, 6, 7],
         "river_crossing": [2, 4],
-        "blocks_world": [2, 6, 10], # Even N required for blocks world logic
+        "blocks_world": [2, 6, 10, 16, 20], # Even N required for blocks world logic
         "checker_jumping": [1, 2, 3]
     },
     "samples_per_config": 10,
@@ -221,6 +237,10 @@ def run_experiment(puzzle, complexity_n, num_samples, model):
     max_attempts = math.floor(num_samples * 1.5)  # Prevent infinite loops if model is failing hard
 
     while valid_samples_collected < num_samples and attempts < max_attempts:
+        if stop_requested:
+            print("  [!] Stopping sample collection due to user request.")
+            break
+
         attempts += 1
         sample_id = valid_samples_collected + 1
         print(f"  Attempting Sample {sample_id}...")
@@ -311,8 +331,11 @@ if __name__ == "__main__":
     print("---")
 
     for model in EXPERIMENT_CONFIG["models"]:
+        if stop_requested: break
         for puzzle, complexities in active_puzzles.items():
+            if stop_requested: break
             for n in complexities:
+                if stop_requested: break
                 run_experiment(
                     puzzle=puzzle,
                     complexity_n=n,
