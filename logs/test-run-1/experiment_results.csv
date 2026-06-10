@@ -1,4 +1,54 @@
 puzzle,n,model,is_correct,thinking_tokens,error_message
+blocks_world,6,deepseek-chat,False,0,Failure at move 1: Block A is not at the top of stack 0
+blocks_world,6,deepseek-chat,False,0,Failure at move 0: Invalid move structure E
+blocks_world,6,deepseek-chat,False,0,Failure at move 0: Block D is not at the top of stack 1
+blocks_world,6,deepseek-chat,False,0,Failure at move 0: Block A is not at the top of stack 0
+blocks_world,6,deepseek-chat,False,0,Failure at move 10: Block D is not at the top of stack 2
+blocks_world,6,deepseek-chat,False,0,Failure at move 0: Block D is not at the top of stack 1
+blocks_world,6,deepseek-chat,False,0,Failure at move 3: Block F is not at the top of stack 1
+blocks_world,6,deepseek-chat,False,0,Failure at move 0: Block A is not at the top of stack 0
+blocks_world,6,deepseek-chat,False,0,Failure at move 0: Invalid move structure E
+blocks_world,6,deepseek-chat,False,0,Failure at move 0: Invalid move structure A
+blocks_world,20,deepseek-chat,False,0,Failure at move 10: Block T is not at the top of stack 2
+blocks_world,20,deepseek-chat,False,0,Failure at move 11: Block J is not at the top of stack 2
+blocks_world,20,deepseek-chat,False,0,Failure at move 3: Block I is not at the top of stack 0
+blocks_world,20,deepseek-chat,False,0,Failure at move 0: Source stack 2 is empty
+blocks_world,20,deepseek-chat,False,0,Failure at move 1: Block J is not at the top of stack 0
+blocks_world,20,deepseek-chat,False,0,Failure at move 11: Block J is not at the top of stack 2
+blocks_world,20,deepseek-chat,False,0,Target state not reached
+blocks_world,20,deepseek-chat,False,0,Target state not reached
+blocks_world,20,deepseek-chat,False,0,Target state not reached
+blocks_world,20,deepseek-chat,False,0,Target state not reached
+blocks_world,16,deepseek-chat,False,0,Failure at move 0: Block I is not at the top of stack 1
+blocks_world,16,deepseek-chat,False,0,Failure at move 3: Block G is not at the top of stack 0
+blocks_world,16,deepseek-chat,False,0,Failure at move 0: Block A is not at the top of stack 0
+blocks_world,16,deepseek-chat,False,0,Failure at move 0: Block A is not at the top of stack 0
+blocks_world,16,deepseek-chat,False,0,Failure at move 1: Block H is not at the top of stack 0
+blocks_world,16,deepseek-chat,False,0,Target state not reached
+blocks_world,16,deepseek-chat,False,0,Failure at move 16: Block P is not at the top of stack 2
+blocks_world,16,deepseek-chat,False,0,Failure at move 1: Block H is not at the top of stack 0
+blocks_world,16,deepseek-chat,False,0,Failure at move 3: Block G is not at the top of stack 0
+blocks_world,16,deepseek-chat,False,0,Failure at move 1: Block H is not at the top of stack 0
+blocks_world,10,deepseek-chat,False,0,Failure at move 3: Block D is not at the top of stack 0
+blocks_world,10,deepseek-chat,False,0,Failure at move 4: Block H is not at the top of stack 1
+blocks_world,10,deepseek-chat,False,0,Failure at move 3: Block D is not at the top of stack 0
+blocks_world,10,deepseek-chat,False,0,Failure at move 0: Block F is not at the top of stack 1
+blocks_world,10,deepseek-chat,False,0,Failure at move 0: Block F is not at the top of stack 1
+blocks_world,10,deepseek-chat,False,0,Invalid format or cut off (could not parse move list)
+blocks_world,10,deepseek-chat,False,0,Failure at move 1: Block E is not at the top of stack 0
+blocks_world,10,deepseek-chat,False,0,Failure at move 0: Block F is not at the top of stack 1
+blocks_world,10,deepseek-chat,False,0,Failure at move 0: Block A is not at the top of stack 0
+blocks_world,10,deepseek-chat,False,0,Failure at move 4: Block D is not at the top of stack 0
+blocks_world,2,deepseek-chat,False,0,Target state not reached
+blocks_world,2,deepseek-chat,False,0,Target state not reached
+blocks_world,2,deepseek-chat,False,0,Target state not reached
+blocks_world,2,deepseek-chat,False,0,Target state not reached
+blocks_world,2,deepseek-chat,True,0,
+blocks_world,2,deepseek-chat,False,0,Target state not reached
+blocks_world,2,deepseek-chat,False,0,Target state not reached
+blocks_world,2,deepseek-chat,False,0,Target state not reached
+blocks_world,2,deepseek-chat,False,0,Target state not reached
+blocks_world,2,deepseek-chat,True,0,
 hanoi,7,deepseek-chat,False,0,Failure at move 24: Disk 1 is not at the top of peg 2
 hanoi,7,deepseek-chat,False,0,Failure at move 43: Illegal move: Disk 3 is larger than 1
 hanoi,7,deepseek-chat,False,0,Failure at move 16: Illegal move: Disk 6 is larger than 1
@@ -69,6 +119,8 @@ river_crossing,2,deepseek-chat,False,0,Failure at move 2: Right Bank Safety viol
 river_crossing,2,deepseek-chat,False,0,Failure at move 1: Left Bank Safety violation: Actor a2 is with rival agents without their own agent.
 river_crossing,2,deepseek-chat,True,0,
 river_crossing,2,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
 blocks_world,6,deepseek-r1,False,8747,Target state not reached
 blocks_world,6,deepseek-r1,False,6789,Target state not reached
 blocks_world,6,deepseek-r1,False,6232,Target state not reached
@@ -79,6 +131,26 @@ blocks_world,6,deepseek-r1,True,5858,
 blocks_world,6,deepseek-r1,True,6790,
 blocks_world,6,deepseek-r1,True,5076,
 blocks_world,6,deepseek-r1,True,6626,
+blocks_world,20,deepseek-r1,True,8118,
+blocks_world,20,deepseek-r1,True,7664,
+blocks_world,20,deepseek-r1,False,11286,Invalid format or cut off (could not parse move list)
+blocks_world,20,deepseek-r1,False,6134,Failure at move 20: Block A is not at the top of stack 2
+blocks_world,20,deepseek-r1,False,10799,Invalid format or cut off (could not parse move list)
+blocks_world,20,deepseek-r1,False,8602,Target state not reached
+blocks_world,20,deepseek-r1,False,17670,Failure at move 0: Invalid move structure B
+blocks_world,20,deepseek-r1,False,6284,Invalid format or cut off (could not parse move list)
+blocks_world,20,deepseek-r1,False,6953,Target state not reached
+blocks_world,20,deepseek-r1,False,11821,Target state not reached
+blocks_world,16,deepseek-r1,False,13956,Target state not reached
+blocks_world,16,deepseek-r1,False,12795,Invalid format or cut off (could not parse move list)
+blocks_world,16,deepseek-r1,False,12534,Target state not reached
+blocks_world,16,deepseek-r1,False,9469,Target state not reached
+blocks_world,16,deepseek-r1,False,8506,Invalid format or cut off (could not parse move list)
+blocks_world,16,deepseek-r1,True,9172,
+blocks_world,16,deepseek-r1,False,9542,Invalid format or cut off (could not parse move list)
+blocks_world,16,deepseek-r1,True,7567,
+blocks_world,16,deepseek-r1,False,10341,Invalid format or cut off (could not parse move list)
+blocks_world,16,deepseek-r1,True,8302,
 blocks_world,10,deepseek-r1,True,7917,
 blocks_world,10,deepseek-r1,True,7256,
 blocks_world,10,deepseek-r1,False,7504,Target state not reached
@@ -179,6 +251,23 @@ checker_jumping,1,deepseek-r1,True,2053,
 checker_jumping,1,deepseek-r1,True,1633,
 checker_jumping,1,deepseek-r1,True,1458,
 checker_jumping,1,deepseek-r1,True,1875,
+checker_jumping,3,deepseek-r1,False,10804,Failure at move 6: Blue checkers cannot move backward
+checker_jumping,3,deepseek-r1,False,12635,Failure at move 4: Target position 2 is not empty
+checker_jumping,3,deepseek-r1,False,7617,Failure at move 0: Invalid move structure B
+checker_jumping,3,deepseek-r1,False,9283,Failure at move 3: Blue checkers cannot move backward
+checker_jumping,3,deepseek-r1,False,11380,Failure at move 4: Target position 4 is not empty
+checker_jumping,3,deepseek-r1,False,11445,Failure at move 7: Red checkers cannot move backward
+checker_jumping,3,deepseek-r1,False,10076,Failure at move 7: Target position 2 is not empty
+checker_jumping,3,deepseek-r1,False,11884,Failure at move 2: Target position 4 is not empty
+checker_jumping,3,deepseek-r1,False,11476,Failure at move 2: Target position 3 is not empty
+checker_jumping,3,deepseek-r1,False,10394,Failure at move 6: Red checkers cannot move backward
+checker_jumping,2,deepseek-r1,False,10468,Failure at move 2: Target position 4 is not empty
+checker_jumping,2,deepseek-r1,True,7886,
+checker_jumping,2,deepseek-r1,True,10367,
 checker_jumping,2,deepseek-r1,False,10824,Failure at move 5: Target position 2 is not empty
 checker_jumping,2,deepseek-r1,True,7609,
+checker_jumping,2,deepseek-r1,False,9135,Failure at move 5: Target position 1 is not empty
 checker_jumping,2,deepseek-r1,True,8373,
+checker_jumping,2,deepseek-r1,True,5166,
+checker_jumping,2,deepseek-r1,True,8099,
+checker_jumping,2,deepseek-r1,False,5119,Failure at move 5: Target position 3 is not empty
