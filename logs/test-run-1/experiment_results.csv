@@ -121,6 +121,34 @@ river_crossing,2,deepseek-chat,True,0,
 river_crossing,2,deepseek-chat,True,0,
 checker_jumping,1,deepseek-chat,True,0,
 checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,1,deepseek-chat,True,0,
+checker_jumping,3,deepseek-chat,False,0,Failure at move 2: Target position 5 is not empty
+checker_jumping,3,deepseek-chat,False,0,Failure at move 4: Move distance too far
+checker_jumping,3,deepseek-chat,False,0,Failure at move 1: Target position 1 is not empty
+checker_jumping,3,deepseek-chat,False,0,Failure at move 3: Blue checkers cannot move backward
+checker_jumping,3,deepseek-chat,False,0,Failure at move 2: Target position 3 is not empty
+checker_jumping,3,deepseek-chat,False,0,Failure at move 0: Target position 4 is not empty
+checker_jumping,3,deepseek-chat,False,0,Failure at move 1: Target position 1 is not empty
+checker_jumping,3,deepseek-chat,False,0,Failure at move 2: Move distance too far
+checker_jumping,3,deepseek-chat,False,0,Failure at move 2: Target position 3 is not empty
+checker_jumping,3,deepseek-chat,False,0,Failure at move 0: Invalid move structure B
+checker_jumping,2,deepseek-chat,False,0,Failure at move 0: Target position 1 is not empty
+checker_jumping,2,deepseek-chat,False,0,Failure at move 2: Target position 0 is not empty
+checker_jumping,2,deepseek-chat,False,0,Failure at move 4: Red checkers cannot move backward
+checker_jumping,2,deepseek-chat,False,0,Failure at move 4: Blue checkers cannot move backward
+checker_jumping,2,deepseek-chat,False,0,Failure at move 0: Invalid move structure R
+checker_jumping,2,deepseek-chat,False,0,Failure at move 5: Red checkers cannot move backward
+checker_jumping,2,deepseek-chat,False,0,Failure at move 5: Move distance too far
+checker_jumping,2,deepseek-chat,False,0,Failure at move 2: Move distance too far
+checker_jumping,2,deepseek-chat,False,0,Failure at move 2: Target position 2 is not empty
+checker_jumping,2,deepseek-chat,False,0,Failure at move 2: Target position 2 is not empty
 blocks_world,6,deepseek-r1,False,8747,Target state not reached
 blocks_world,6,deepseek-r1,False,6789,Target state not reached
 blocks_world,6,deepseek-r1,False,6232,Target state not reached
