@@ -63,16 +63,21 @@ def process_logs(log_dir):
                 "error_message": report if not is_correct else ""
             })
 
+    # Create data directory for this run
+    run_name = os.path.basename(os.path.normpath(log_dir))
+    data_dir = os.path.join("data", run_name)
+    os.makedirs(data_dir, exist_ok=True)
+
     # Save to CSV for the final presentation graphs
     df = pd.DataFrame(results)
-    csv_path = os.path.join(log_dir, "experiment_results.csv")
+    csv_path = os.path.join(data_dir, "experiment_results.csv")
     df.to_csv(csv_path, index=False)
     print(f"Evaluation complete. Results saved to {csv_path}")
 
     # Generate the visualization graph automatically
     import visualize
     print("Generating visualization graph...")
-    visualize.plot_accuracy_vs_complexity(csv_path=csv_path, output_dir=log_dir)
+    visualize.plot_experiment_results(csv_path=csv_path, output_dir=data_dir)
 
 
 if __name__ == "__main__":
